@@ -2,7 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
-const ClothingItem = require("../models/clothingItem");
+const ClothingItem = require("../models]/clothingItem");
 
 const getCards = async (req, res) => {
   try {
