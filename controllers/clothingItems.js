@@ -48,4 +48,8 @@ router.get("/items", getCards);
 router.post("/items", createClothingItem);
 router.delete("/items/:itemId", deleteClothingItem);
 
+router.use((req, res) => {
+  res.status(404).json({ message: "Requested resource not found" });
+});
+
 module.exports = router;
