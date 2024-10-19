@@ -4,7 +4,7 @@ const router = express.Router();
 
 const clothingItemController = require("../controllers/clothingItems");
 
-router.get("/items", clothingItemController.getCards);
+router.get("/items", clothingItemController.getClothingItems);
 router.post("/items", clothingItemController.createClothingItem);
 router.delete("/items/:itemId", clothingItemController.deleteClothingItem);
 

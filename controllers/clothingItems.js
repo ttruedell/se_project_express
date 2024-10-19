@@ -4,12 +4,12 @@
 
 const ClothingItem = require("../models/clothingItem");
 
-module.exports.getCards = async (req, res) => {
+module.exports.getClothingItems = async (req, res) => {
   try {
     const clothingItems = await ClothingItem.find();
     res.status(200).json(clothingItems);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching cloting items" });
+    res.status(500).json({ message: "Error fetching clothing items" });
   }
 };
 
