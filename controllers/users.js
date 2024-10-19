@@ -1,10 +1,10 @@
-const express = require("express");
+// const express = require("express");
 
-const router = express.Router();
+// const router = express.Router();
 
 const User = require("../models/user");
 
-const getUsers = async (req, res) => {
+module.exports.getUsers = async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json(users);
@@ -13,7 +13,7 @@ const getUsers = async (req, res) => {
   }
 };
 
-const getUser = async (req, res) => {
+module.exports.getUser = async (req, res) => {
   const { userId } = req.params;
   try {
     const user = await User.findById(userId);
@@ -26,7 +26,7 @@ const getUser = async (req, res) => {
   }
 };
 
-const createUser = async (req, res) => {
+module.exports.createUser = async (req, res) => {
   const { name, avatar } = req.body;
   try {
     const newUser = new User({ name, avatar });
@@ -38,13 +38,3 @@ const createUser = async (req, res) => {
       .json({ message: "Error creating user", error: error.message });
   }
 };
-
-router.get("/users", getUsers);
-router.get("/users/:userId", getUser);
-router.post("/users", createUser);
-
-router.use((req, res) => {
-  res.status(404).json({ message: "Requested resource not found" });
-});
-
-module.exports = router;

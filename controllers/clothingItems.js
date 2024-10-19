@@ -1,10 +1,10 @@
-const express = require("express");
+// const express = require("express");
 
-const router = express.Router();
+// const router = express.Router();
 
-const ClothingItem = require("../models]/clothingItem");
+const ClothingItem = require("../models/clothingItem");
 
-const getCards = async (req, res) => {
+module.exports.getCards = async (req, res) => {
   try {
     const clothingItems = await ClothingItem.find();
     res.status(200).json(clothingItems);
@@ -13,7 +13,7 @@ const getCards = async (req, res) => {
   }
 };
 
-const createClothingItem = async (req, res) => {
+module.exports.createClothingItem = async (req, res) => {
   const { name, weather, imageUrl, owner } = req.body;
   try {
     const newClothingItem = new ClothingItem({
@@ -31,7 +31,7 @@ const createClothingItem = async (req, res) => {
   }
 };
 
-const deleteClothingItem = async (req, res) => {
+module.exports.deleteClothingItem = async (req, res) => {
   const { itemId } = req.params;
   try {
     const deletedClothingItem = await ClothingItem.findByIdAndDelete(itemId);
@@ -43,13 +43,3 @@ const deleteClothingItem = async (req, res) => {
     res.status(500).json({ message: "Error fetching cloting items" });
   }
 };
-
-router.get("/items", getCards);
-router.post("/items", createClothingItem);
-router.delete("/items/:itemId", deleteClothingItem);
-
-router.use((req, res) => {
-  res.status(404).json({ message: "Requested resource not found" });
-});
-
-module.exports = router;
