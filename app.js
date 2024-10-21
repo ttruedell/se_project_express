@@ -2,27 +2,23 @@ const express = require("express");
 
 const mongoose = require("mongoose");
 
-// const userRoutes = require("./controllers/users");
-// const clothingItemRoutes = require("./controllers/clothingItems");
-
 const routes = require("./routes");
 
-const { PORT = 3002 } = process.env;
+const { PORT = 3001 } = process.env;
 const app = express();
 
 app.use(express.json());
-// app.use("/users", userRoutes);
-// app.use("/items", clothingItemRoutes);
 app.use("/api", routes);
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/wtwr_db", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect("mongodb://127.0.0.1:27017/wtwr_db")
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server is running on http://localhost:${PORT}`);
-    });
+    console.log("Connected to DB");
   })
-  .catch((err) => console.error(err));
+  .catch(console.error);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+mongoose.set("strictQuery", true);
