@@ -1,26 +1,39 @@
 const User = require("../models/user");
 
+const ERROR_CODES = require("../utils/errors");
+
 module.exports.getUsers = async (req, res) => {
   try {
     const users = await User.find();
     return res.status(200).json(users);
   } catch (error) {
-    console.error("Error fetching users:", error);
-    return res.status(500).json({ message: "Error fetching users" });
+    console.error(error);
+    return res
+      .status(ERROR_CODES.SERVER_ERROR)
+      .send({ message: "Error fetching users." });
   }
 };
 
 module.exports.getUser = async (req, res) => {
   const { userId } = req.params;
   try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const user = await User.findById(userId).orFail(() => {
+      const error = new Error("User ID not found.");
+      error.statusCode = 404;
+      throw error;
+    });
+
     return res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching user:", error);
-    return res.status(500).json({ message: "Error fetching user" });
+    console.error(
+      `Error ${error.name} with the message ${error.message} has occurred while executing the code`
+    );
+    if (error.statusCode) {
+      return res.status(error.statusCode).send({ message: error.message });
+    }
+    return res
+      .status(ERROR_CODES.SERVER_ERROR)
+      .send({ message: "An error has occurred on the server." });
   }
 };
 
@@ -31,9 +44,19 @@ module.exports.createUser = async (req, res) => {
     await newUser.save();
     return res.status(201).json(newUser);
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error(error);
+
+    if (error.name === "ValidationError") {
+      return res
+        .status(ERROR_CODES.BAD_REQUEST)
+        .send({ message: "Invalid data provided." });
+    } else if (error.name === "MongoError" && error.code === 11000) {
+      return res
+        .status(ERROR_CODES.BAD_REQUEST)
+        .send({ message: "User already exists." });
+    }
     return res
-      .status(400)
-      .json({ message: "Error creating user", error: error.message });
+      .status(ERROR_CODES.SERVER_ERROR)
+      .send({ message: "An error has occurred on the server." });
   }
 };

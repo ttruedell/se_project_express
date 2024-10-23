@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const { Schema } = mongoose;
+// const { Schema } = mongoose;
 
 const validator = require("validator");
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
     minlength: 2,
@@ -23,6 +23,7 @@ const userSchema = new Schema({
   },
 });
 
-const User = mongoose.model("User", userSchema);
+// const User = mongoose.model("User", userSchema);
+module.exports = mongoose.model("User", userSchema);
 
-module.exports = User;
+// modules.exports = User;

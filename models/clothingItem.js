@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const { Schema } = mongoose;
+// const { Schema } = mongoose;
 
 const validator = require("validator");
 
-const clothingItemsSchema = new Schema({
+const clothingItemsSchema = new mongoose.Schema({
   name: {
     type: String,
     minlength: 2,
@@ -18,6 +18,7 @@ const clothingItemsSchema = new Schema({
   },
   imageUrl: {
     type: String,
+    required: true,
     validate: {
       validator(value) {
         return validator.isURL(value);
@@ -42,6 +43,7 @@ const clothingItemsSchema = new Schema({
   },
 });
 
-const ClothingItem = mongoose.model("ClothingItem", clothingItemsSchema);
+// const ClothingItem = mongoose.model("ClothingItem", clothingItemsSchema);
+module.exports = mongoose.model("ClothingItem", clothingItemsSchema);
 
-module.exports = ClothingItem;
+// modules.exports = ClothingItem;

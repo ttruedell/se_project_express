@@ -9,6 +9,7 @@ router.get("/users/:userId", usersController.getUser);
 router.post("/users", usersController.createUser);
 
 router.use((req, res) => {
+  console.error();
   res.status(404).json({ message: "Requested resource not found" });
 });
 
