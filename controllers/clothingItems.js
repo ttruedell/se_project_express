@@ -2,6 +2,16 @@ const ClothingItem = require("../models/clothingItem");
 
 const ERROR_CODES = require("../utils/errors");
 
+const mongoose = require("mongoose");
+
+// const itemIdValidator = (req, res) => {
+//   if (!mongoose.Types.ObjectId.isValid(itemId)) {
+//     return res
+//       .status(ERROR_CODES.BAD_REQUEST)
+//       .send({ message: "Invalid item ID format." });
+//   }
+// };
+
 module.exports.getClothingItems = async (req, res) => {
   try {
     const clothingItems = await ClothingItem.find().orFail(() => {
@@ -53,6 +63,14 @@ module.exports.createClothingItem = async (req, res) => {
 
 module.exports.deleteClothingItem = async (req, res) => {
   const { itemId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return res
+      .status(ERROR_CODES.BAD_REQUEST)
+      .send({ message: "Invalid item ID format." });
+  }
+  // itemIdValidator();
+
   try {
     const deletedClothingItem = await ClothingItem.findByIdAndDelete(itemId);
     if (!deletedClothingItem) {
@@ -74,6 +92,13 @@ module.exports.deleteClothingItem = async (req, res) => {
 module.exports.likeItem = async (req, res) => {
   const { itemId } = req.params;
   const userId = req.user._id;
+
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return res
+      .status(ERROR_CODES.BAD_REQUEST)
+      .send({ message: "Invalid item ID format." });
+  }
+  // itemIdValidator();
 
   try {
     const updatedItem = await ClothingItem.findByIdAndUpdate(
@@ -101,6 +126,13 @@ module.exports.likeItem = async (req, res) => {
 module.exports.dislikeItem = async (req, res) => {
   const { itemId } = req.params;
   const userId = req.user._id;
+
+  if (!mongoose.Types.ObjectId.isValid(itemId)) {
+    return res
+      .status(ERROR_CODES.BAD_REQUEST)
+      .send({ message: "Invalid item ID format." });
+  }
+  // itemIdValidator();
 
   try {
     const updatedItem = await ClothingItem.findByIdAndUpdate(
