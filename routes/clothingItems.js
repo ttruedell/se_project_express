@@ -2,11 +2,14 @@ const express = require("express");
 
 const router = express.Router();
 
-const clothingItemController = require("../controllers/clothingItems");
+const clothingItemsController = require("../controllers/clothingItems");
 
-router.get("/items", clothingItemController.getClothingItems);
-router.post("/items", clothingItemController.createClothingItem);
-router.delete("/items/:itemId", clothingItemController.deleteClothingItem);
+router.get("/", clothingItemsController.getClothingItems);
+router.post("/", clothingItemsController.createClothingItem);
+router.delete("/:itemId", clothingItemsController.deleteClothingItem);
+
+router.put("/:itemId/likes", clothingItemsController.likeItem);
+router.delete("/:itemId/likes", clothingItemsController.dislikeItem);
 
 router.use((req, res) => {
   res.status(404).json({ message: "Requested resource not found" });

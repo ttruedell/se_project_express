@@ -26,7 +26,9 @@ module.exports.getClothingItems = async (req, res) => {
 };
 
 module.exports.createClothingItem = async (req, res) => {
-  const { name, weather, imageUrl, owner } = req.body;
+  const { name, weather, imageUrl } = req.body;
+  const owner = req.user._id;
+
   try {
     const newClothingItem = new ClothingItem({
       name,
@@ -63,6 +65,60 @@ module.exports.deleteClothingItem = async (req, res) => {
       .json({ message: "Clothing item deleted successfully." });
   } catch (error) {
     console.error(error);
+    return res
+      .status(ERROR_CODES.SERVER_ERROR)
+      .send({ message: "An error has occurred on the server." });
+  }
+};
+
+module.exports.likeItem = async (req, res) => {
+  const { itemId } = req.params;
+  const userId = req.user._id;
+
+  try {
+    const updatedItem = await ClothingItem.findByIdAndUpdate(
+      itemId,
+      { $addToSet: { likes: userId } },
+      { new: true }
+    );
+
+    if (!updatedItem) {
+      return res
+        .status(ERROR_CODES.NOT_FOUND)
+        .send({ message: "Clothing item not found." });
+    }
+    return res.status(200).json(updatedItem);
+  } catch (error) {
+    console.error(
+      `Error ${error.name} with the message ${error.message} has occurred while executing the code`
+    );
+    return res
+      .status(ERROR_CODES.SERVER_ERROR)
+      .send({ message: "An error has occurred on the server." });
+  }
+};
+
+module.exports.dislikeItem = async (req, res) => {
+  const { itemId } = req.params;
+  const userId = req.user._id;
+
+  try {
+    const updatedItem = await ClothingItem.findByIdAndUpdate(
+      itemId,
+      { $pull: { likes: userId } },
+      { new: true }
+    );
+
+    if (!updatedItem) {
+      return res
+        .status(ERROR_CODES.NOT_FOUND)
+        .send({ message: "Clothing item not found." });
+    }
+    return res.status(200).json(updatedItem);
+  } catch (error) {
+    console.error(
+      `Error ${error.name} with the message ${error.message} has occurred while executing the code`
+    );
     return res
       .status(ERROR_CODES.SERVER_ERROR)
       .send({ message: "An error has occurred on the server." });
