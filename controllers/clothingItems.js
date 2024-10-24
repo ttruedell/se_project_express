@@ -1,8 +1,8 @@
+const mongoose = require("mongoose");
+
 const ClothingItem = require("../models/clothingItem");
 
 const ERROR_CODES = require("../utils/errors");
-
-const mongoose = require("mongoose");
 
 // const itemIdValidator = (req, res) => {
 //   if (!mongoose.Types.ObjectId.isValid(itemId)) {
