@@ -6,13 +6,13 @@ This project is a web application designed to manage a collection of clothing it
 
 ### Functionality
 
-- **User Management:**
+- ### User Management:
 
 - Create a new user profile.
 - Retrieve all user profiles or a specific user by ID.
 - Clothing Item Management:
 
-- **Create a new clothing item.**
+- ### Create a new clothing item.
 - Retrieve all clothing items or a specific item by ID.
 - Update clothing items to add or remove likes.
 - Delete clothing items from the collection.
