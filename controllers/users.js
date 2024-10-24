@@ -1,8 +1,8 @@
+const mongoose = require("mongoose");
+
 const User = require("../models/user");
 
 const ERROR_CODES = require("../utils/errors");
-
-const mongoose = require("mongoose");
 
 module.exports.getUsers = async (req, res) => {
   try {
