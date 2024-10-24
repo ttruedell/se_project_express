@@ -14,11 +14,12 @@ const ERROR_CODES = require("../utils/errors");
 
 module.exports.getClothingItems = async (req, res) => {
   try {
-    const clothingItems = await ClothingItem.find().orFail(() => {
-      const error = new Error("Clothin item ID not found.");
-      error.statusCode = 404;
-      throw error;
-    });
+    const clothingItems = await ClothingItem.find();
+    // .orFail(() => {
+    //   const error = new Error("Clothin item ID not found.");
+    //   error.statusCode = 404;
+    //   throw error;
+    // });
 
     return res.status(200).json(clothingItems);
   } catch (error) {
