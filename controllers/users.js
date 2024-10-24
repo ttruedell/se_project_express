@@ -7,7 +7,7 @@ const ERROR_CODES = require("../utils/errors");
 module.exports.getUsers = async (req, res) => {
   try {
     const users = await User.find();
-    return res.status(200).json(users);
+    return res.status(ERROR_CODES.OK).json(users);
   } catch (error) {
     console.error(error);
     return res
@@ -32,7 +32,7 @@ module.exports.getUser = async (req, res) => {
       throw error;
     });
 
-    return res.status(200).json(user);
+    return res.status(ERROR_CODES.OK).json(user);
   } catch (error) {
     console.error(
       `Error ${error.name} with the message ${error.message} has occurred while executing the code`
@@ -51,7 +51,7 @@ module.exports.createUser = async (req, res) => {
   try {
     const newUser = new User({ name, avatar });
     await newUser.save();
-    return res.status(201).json(newUser);
+    return res.status(ERROR_CODES.CREATED).json(newUser);
   } catch (error) {
     console.error(error);
 

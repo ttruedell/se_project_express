@@ -8,7 +8,7 @@ module.exports.getClothingItems = async (req, res) => {
   try {
     const clothingItems = await ClothingItem.find();
 
-    return res.status(200).json(clothingItems);
+    return res.status(ERROR_CODES.OK).json(clothingItems);
   } catch (error) {
     console.error(
       `Error ${error.name} with the message ${error.message} has occurred while executing the code`
@@ -35,7 +35,7 @@ module.exports.createClothingItem = async (req, res) => {
       owner,
     });
     await newClothingItem.save();
-    return res.status(201).json(newClothingItem);
+    return res.status(ERROR_CODES.CREATED).json(newClothingItem);
   } catch (error) {
     console.error(error);
     if (error.name === "ValidationError") {
@@ -66,7 +66,7 @@ module.exports.deleteClothingItem = async (req, res) => {
         .send({ message: "Clothing item not found." });
     }
     return res
-      .status(200)
+      .status(ERROR_CODES.OK)
       .json({ message: "Clothing item deleted successfully." });
   } catch (error) {
     console.error(error);
@@ -98,7 +98,7 @@ module.exports.likeItem = async (req, res) => {
         .status(ERROR_CODES.NOT_FOUND)
         .send({ message: "Clothing item not found." });
     }
-    return res.status(200).json(updatedItem);
+    return res.status(ERROR_CODES.OK).json(updatedItem);
   } catch (error) {
     console.error(
       `Error ${error.name} with the message ${error.message} has occurred while executing the code`
@@ -131,7 +131,7 @@ module.exports.dislikeItem = async (req, res) => {
         .status(ERROR_CODES.NOT_FOUND)
         .send({ message: "Clothing item not found." });
     }
-    return res.status(200).json(updatedItem);
+    return res.status(ERROR_CODES.OK).json(updatedItem);
   } catch (error) {
     console.error(
       `Error ${error.name} with the message ${error.message} has occurred while executing the code`
