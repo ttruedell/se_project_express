@@ -2,6 +2,8 @@ const User = require("../models/user");
 
 const ERROR_CODES = require("../utils/errors");
 
+const mongoose = require("mongoose");
+
 module.exports.getUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -16,6 +18,13 @@ module.exports.getUsers = async (req, res) => {
 
 module.exports.getUser = async (req, res) => {
   const { userId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res
+      .status(ERROR_CODES.BAD_REQUEST)
+      .send({ message: "Invalid user ID format." });
+  }
+
   try {
     const user = await User.findById(userId).orFail(() => {
       const error = new Error("User ID not found.");
