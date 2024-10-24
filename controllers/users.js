@@ -61,11 +61,12 @@ module.exports.createUser = async (req, res) => {
         .send({ message: "Invalid data provided." });
     }
 
-    if (error.name === "MongoError" && error.code === 11000) {
-      return res
-        .status(ERROR_CODES.BAD_REQUEST)
-        .send({ message: "User already exists." });
-    }
+    // if (error.name === "MongoError" && error.code === 11000) {
+    //   return res
+    //     .status(ERROR_CODES.BAD_REQUEST)
+    //     .send({ message: "User already exists." });
+    // }
+
     return res
       .status(ERROR_CODES.SERVER_ERROR)
       .send({ message: "An error has occurred on the server." });
