@@ -4,6 +4,7 @@ const ERROR_CODES = {
   SERVER_ERROR: 500,
   OK: 200,
   CREATED: 201,
+  AUTHENTICATION_ERROR: 401,
 };
 
 module.exports = ERROR_CODES;

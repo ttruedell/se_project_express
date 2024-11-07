@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
+
 const bcrypt = require("bcryptjs");
+
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 
@@ -87,4 +90,22 @@ module.exports.createUser = async (req, res) => {
       .status(ERROR_CODES.SERVER_ERROR)
       .send({ message: "An error has occurred on the server." });
   }
+};
+
+module.exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+
+      res.send({ token });
+    })
+    .catch((err) => {
+      res
+        .status(ERROR_CODES.AUTHENTICATION_ERROR)
+        .send({ message: err.message });
+    });
 };
