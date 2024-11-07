@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const User = require("../models/user");
 
@@ -47,11 +48,26 @@ module.exports.getUser = async (req, res) => {
 };
 
 module.exports.createUser = async (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body;
+
   try {
-    const newUser = new User({ name, avatar });
-    await newUser.save();
-    return res.status(ERROR_CODES.CREATED).json(newUser);
+    const hash = await bcrypt.hash(password, 10);
+
+    // const newUser = new User({ name, avatar });
+    const newUser = new User.create({
+      name,
+      avatar,
+      email,
+      password: hash,
+    });
+
+    // await newUser.save();
+    return res.status(ERROR_CODES.CREATED).json({
+      name: newUser.name,
+      avatar: newUser.avatar,
+      email: newUser.email,
+      _id: newUser._id,
+    });
   } catch (error) {
     console.error(error);
 
@@ -61,11 +77,11 @@ module.exports.createUser = async (req, res) => {
         .send({ message: "Invalid data provided." });
     }
 
-    // if (error.name === "MongoError" && error.code === 11000) {
-    //   return res
-    //     .status(ERROR_CODES.BAD_REQUEST)
-    //     .send({ message: "User already exists." });
-    // }
+    if (error.name === "MongoError" && error.code === 11000) {
+      return res
+        .status(ERROR_CODES.BAD_REQUEST)
+        .send({ message: "User already exists." });
+    }
 
     return res
       .status(ERROR_CODES.SERVER_ERROR)
