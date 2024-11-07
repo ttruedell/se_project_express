@@ -4,9 +4,13 @@ const router = express.Router();
 
 const clothingItemsController = require("../controllers/clothingItems");
 
+const auth = require("../middlewares/auth");
+
+router.use(auth);
+
 router.get("/", clothingItemsController.getClothingItems);
-router.post("/", clothingItemsController.createClothingItem);
-router.delete("/:itemId", clothingItemsController.deleteClothingItem);
+router.post("/", auth, clothingItemsController.createClothingItem);
+router.delete("/:itemId", auth, clothingItemsController.deleteClothingItem);
 
 router.put("/:itemId/likes", clothingItemsController.likeItem);
 router.delete("/:itemId/likes", clothingItemsController.dislikeItem);
