@@ -23,7 +23,7 @@ mongoose
   })
   .catch(console.error);
 
-app.use(cors);
+app.use(cors());
 
 app.use(express.json());
 
