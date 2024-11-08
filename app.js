@@ -20,12 +20,12 @@ mongoose
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: "6718a6038b82c033ac9ab404",
-  };
-  next();
-});
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: "6718a6038b82c033ac9ab404",
+//   };
+//   next();
+// });
 
 app.use("/", routes);
 
