@@ -51,6 +51,7 @@ module.exports.createClothingItem = async (req, res) => {
 
 module.exports.deleteClothingItem = async (req, res) => {
   const { itemId } = req.params;
+  const owner = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
     return res
@@ -59,12 +60,22 @@ module.exports.deleteClothingItem = async (req, res) => {
   }
 
   try {
-    const deletedClothingItem = await ClothingItem.findByIdAndDelete(itemId);
-    if (!deletedClothingItem) {
+    const clothingItem = await ClothingItem.findById(itemId);
+
+    if (!clothingItem) {
       return res
         .status(ERROR_CODES.NOT_FOUND)
         .send({ message: "Clothing item not found." });
     }
+
+    if (!clothingItem.owner.equals(owner)) {
+      return res
+        .status(ERROR_CODES.FORBIDDEN)
+        .send({ message: "You do not have permission to delete this item." });
+    }
+
+    await ClothingItem.findByIdAndDelete(itemId);
+
     return res
       .status(ERROR_CODES.OK)
       .json({ message: "Clothing item deleted successfully." });
