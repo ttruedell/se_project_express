@@ -12,7 +12,7 @@ router.get("/", clothingItemsController.getClothingItems);
 router.post("/", auth, clothingItemsController.createClothingItem);
 router.delete("/:itemId", auth, clothingItemsController.deleteClothingItem);
 
-router.put("/:itemId/likes", clothingItemsController.likeItem);
-router.delete("/:itemId/likes", clothingItemsController.dislikeItem);
+router.put("/:itemId/likes", auth, clothingItemsController.likeItem);
+router.delete("/:itemId/likes", auth, clothingItemsController.dislikeItem);
 
 module.exports = router;

@@ -10,19 +10,20 @@ const User = require("../models/user");
 
 const ERROR_CODES = require("../utils/errors");
 
-module.exports.getUsers = async (req, res) => {
-  try {
-    const users = await User.find();
-    return res.status(ERROR_CODES.OK).json(users);
-  } catch (error) {
-    console.error(error);
-    return res
-      .status(ERROR_CODES.SERVER_ERROR)
-      .send({ message: "Error fetching users." });
-  }
-};
+// module.exports.getUsers = async (req, res) => {
+//   try {
+//     const users = await User.find();
+//     return res.status(ERROR_CODES.OK).json(users);
+//   } catch (error) {
+//     console.error(error);
+//     return res
+//       .status(ERROR_CODES.SERVER_ERROR)
+//       .send({ message: "Error fetching users." });
+//   }
+// };
 
-module.exports.getUser = async (req, res) => {
+// module.exports.getUser = async (req, res) => {
+module.exports.getCurrentUser = async (req, res) => {
   const { userId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
