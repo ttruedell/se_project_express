@@ -95,6 +95,39 @@ module.exports.createUser = async (req, res) => {
   }
 };
 
+module.exports.updateUserData = async (req, res) => {
+  const userId = req.user._id;
+  const { name, avatar } = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { name, avatar },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res
+        .status(ERROR_CODES.NOT_FOUND)
+        .send({ message: "User not found." });
+    }
+
+    return res.status(ERROR_CODES.OK).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+
+    if (error.name === "ValidationError") {
+      return res
+        .status(ERROR_CODES.BAD_REQUEST)
+        .send({ message: "Invalid data provided." });
+    }
+
+    return res
+      .status(ERROR_CODES.SERVER_ERROR)
+      .send({ message: "An error has occurred on the server." });
+  }
+};
+
 module.exports.login = async (req, res) => {
   const { email, password } = req.body;
 
