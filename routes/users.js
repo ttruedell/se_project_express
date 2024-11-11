@@ -6,7 +6,7 @@ const usersController = require("../controllers/users");
 
 const auth = require("../middlewares/auth");
 
-router.use(auth);
+// router.use(auth);
 
 // router.get("/", usersController.getUsers);
 // router.get("/:userId", usersController.getUser);

@@ -8,9 +8,9 @@ const clothingItemRoutes = require("./clothingItems");
 
 const ERROR_CODES = require("../utils/errors");
 
-const auth = require("../middlewares/auth");
+// const auth = require("../middlewares/auth");
 
-router.use(auth);
+// router.use(auth);
 
 router.use("/users", userRoutes);
 router.use("/items", clothingItemRoutes);

@@ -6,7 +6,7 @@ const clothingItemsController = require("../controllers/clothingItems");
 
 const auth = require("../middlewares/auth");
 
-router.use(auth);
+// router.use(auth);
 
 router.get("/", clothingItemsController.getClothingItems);
 router.post("/", auth, clothingItemsController.createClothingItem);
