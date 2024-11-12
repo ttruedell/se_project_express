@@ -6,6 +6,8 @@ const userRoutes = require("./users");
 
 const clothingItemRoutes = require("./clothingItems");
 
+const { login, createUser } = require("../controllers/users");
+
 const ERROR_CODES = require("../utils/errors");
 
 // const auth = require("../middlewares/auth");
@@ -14,6 +16,9 @@ const ERROR_CODES = require("../utils/errors");
 
 router.use("/users", userRoutes);
 router.use("/items", clothingItemRoutes);
+
+router.post("/signin", login);
+router.post("/signup", createUser);
 
 router.use((req, res) => {
   console.error();

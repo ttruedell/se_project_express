@@ -6,7 +6,7 @@ const cors = require("cors");
 
 const routes = require("./routes/index");
 
-const { login, createUser } = require("./controllers/users");
+// const { login, createUser } = require("./controllers/users");
 
 // const { createUser } = require("./controllers/users");
 
@@ -36,8 +36,8 @@ app.use(express.json());
 
 app.use("/", routes);
 
-app.post("/signin", login);
-app.post("signup", createUser);
+// app.post("signin", login);
+// app.post("signup", createUser);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
