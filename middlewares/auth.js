@@ -21,12 +21,8 @@ module.exports = (req, res, next) => {
   let payload;
 
   try {
-    /*const */ payload = jwt.verify(token, JWT_SECRET);
+    payload = jwt.verify(token, JWT_SECRET);
     console.log("Token payload:", payload);
-
-    // req.user = payload;
-
-    // return next();
   } catch (err) {
     console.error("Token verification failed:", err);
     return res
