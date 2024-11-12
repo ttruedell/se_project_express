@@ -10,7 +10,7 @@ const { login, createUser } = require("../controllers/users");
 
 const ERROR_CODES = require("../utils/errors");
 
-// const auth = require("../middlewares/auth");
+const auth = require("../middlewares/auth");
 
 // router.use(auth);
 

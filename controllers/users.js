@@ -143,17 +143,23 @@ module.exports.updateUserData = async (req, res) => {
 module.exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-        expiresIn: "7d",
-      });
+  if (!email || !password) {
+    return res
+      .status(ERROR_CODES.BAD_REQUEST)
+      .send({ message: "Email and password are required." });
+  }
 
-      res.send({ token });
-    })
-    .catch((err) => {
-      res
-        .status(ERROR_CODES.AUTHENTICATION_ERROR)
-        .send({ message: err.message });
+  try {
+    const user = await User.findUserByCredentials(email, password);
+
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+      expiresIn: "7d",
     });
+
+    return res.send({ token });
+  } catch (err) {
+    return res
+      .status(ERROR_CODES.AUTHENTICATION_ERROR)
+      .send({ message: err.message });
+  }
 };
