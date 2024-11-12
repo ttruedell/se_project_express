@@ -14,7 +14,7 @@ const ERROR_CODES = require("../utils/errors");
 
 // router.use(auth);
 
-router.use("/users", userRoutes);
+router.use("/", userRoutes);
 router.use("/items", clothingItemRoutes);
 
 router.post("/signin", login);

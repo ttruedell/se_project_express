@@ -54,7 +54,7 @@ module.exports.createUser = async (req, res) => {
 
   if (!email || !validator.isEmail(email)) {
     return res
-      .status(ERROR_CODES.CONFLICT)
+      .status(ERROR_CODES.BAD_REQUEST)
       .send({ message: "Invalid email provided." });
   }
 
@@ -62,7 +62,9 @@ module.exports.createUser = async (req, res) => {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return res.status(409).send({ message: "User already exists." });
+      return res
+        .status(ERROR_CODES.CONFLICT)
+        .send({ message: "User already exists." });
     }
 
     const hash = await bcrypt.hash(password, 10);
@@ -89,11 +91,11 @@ module.exports.createUser = async (req, res) => {
         .send({ message: "Invalid data provided." });
     }
 
-    // if (error.name === "MongoError" && error.code === 11000) {
-    //   return res
-    //     .status(ERROR_CODES.CONFLICT)
-    //     .send({ message: "User already exists." });
-    // }
+    if (error.name === "MongoError" && error.code === 11000) {
+      return res
+        .status(ERROR_CODES.CONFLICT)
+        .send({ message: "User already exists." });
+    }
 
     return res
       .status(ERROR_CODES.SERVER_ERROR)
