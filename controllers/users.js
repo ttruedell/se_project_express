@@ -152,8 +152,14 @@ module.exports.login = async (req, res) => {
 
     return res.status(ERROR_CODES.OK).send({ token });
   } catch (err) {
+    if (err.message === "Incorrect email or password.") {
+      return res
+        .status(ERROR_CODES.AUTHENTICATION_ERROR)
+        .send({ message: "Incorrect email or password." });
+    }
+
     return res
-      .status(ERROR_CODES.AUTHENTICATION_ERROR)
-      .send({ message: err.message });
+      .status(ERROR_CODES.SERVER_ERROR)
+      .send({ message: "An error has occurred on the server." });
   }
 };
