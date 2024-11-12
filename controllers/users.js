@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 
 const jwt = require("jsonwebtoken");
 
+const validator = require("validator");
+
 const { JWT_SECRET } = require("../utils/config");
 
 const User = require("../models/user");
@@ -56,10 +58,21 @@ module.exports.getCurrentUser = async (req, res) => {
 module.exports.createUser = async (req, res) => {
   const { name, avatar, email, password } = req.body;
 
+  if (!email || !validator.isEmail(email)) {
+    return res
+      .status(ERROR_CODES.CONFLICT)
+      .send({ message: "Invalid email provided." });
+  }
+
   try {
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(409).send({ message: "User already exists." });
+    }
+
     const hash = await bcrypt.hash(password, 10);
 
-    // const newUser = new User({ name, avatar });
     const newUser = await User.create({
       name,
       avatar,
@@ -67,7 +80,6 @@ module.exports.createUser = async (req, res) => {
       password: hash,
     });
 
-    // await newUser.save();
     return res.status(ERROR_CODES.CREATED).json({
       name: newUser.name,
       avatar: newUser.avatar,
@@ -83,11 +95,11 @@ module.exports.createUser = async (req, res) => {
         .send({ message: "Invalid data provided." });
     }
 
-    if (error.name === "MongoError" && error.code === 11000) {
-      return res
-        .status(ERROR_CODES.BAD_REQUEST)
-        .send({ message: "User already exists." });
-    }
+    // if (error.name === "MongoError" && error.code === 11000) {
+    //   return res
+    //     .status(ERROR_CODES.CONFLICT)
+    //     .send({ message: "User already exists." });
+    // }
 
     return res
       .status(ERROR_CODES.SERVER_ERROR)
