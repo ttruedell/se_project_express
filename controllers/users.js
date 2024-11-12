@@ -40,9 +40,7 @@ module.exports.getCurrentUser = async (req, res) => {
     console.error(
       `Error ${error.name} with the message ${error.message} has occurred while executing the code`
     );
-    if (error.statusCode) {
-      return res.status(error.statusCode).send({ message: error.message });
-    }
+
     return res
       .status(ERROR_CODES.SERVER_ERROR)
       .send({ message: "An error has occurred on the server." });
