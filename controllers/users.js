@@ -6,27 +6,14 @@ const jwt = require("jsonwebtoken");
 
 const validator = require("validator");
 
-const { JWT_SECRET } = require("../utils/config");
+const JWT_SECRET = require("../utils/config");
 
 const User = require("../models/user");
 
 const ERROR_CODES = require("../utils/errors");
 
-// module.exports.getUsers = async (req, res) => {
-//   try {
-//     const users = await User.find();
-//     return res.status(ERROR_CODES.OK).json(users);
-//   } catch (error) {
-//     console.error(error);
-//     return res
-//       .status(ERROR_CODES.SERVER_ERROR)
-//       .send({ message: "Error fetching users." });
-//   }
-// };
-
-// module.exports.getUser = async (req, res) => {
 module.exports.getCurrentUser = async (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
     return res
@@ -35,13 +22,20 @@ module.exports.getCurrentUser = async (req, res) => {
   }
 
   try {
-    const user = await User.findById(userId).orFail(() => {
-      const error = new Error("User ID not found.");
-      error.statusCode = 404;
-      throw error;
-    });
+    const user = await User.findById(userId);
 
-    return res.status(ERROR_CODES.OK).json(user);
+    if (!user) {
+      return res
+        .status(ERROR_CODES.NOT_FOUND)
+        .send({ message: "User not found." });
+    }
+
+    return res.status(ERROR_CODES.OK).json({
+      _id: user._id,
+      name: user.name,
+      avatar: user.avatar,
+      email: user.email,
+    });
   } catch (error) {
     console.error(
       `Error ${error.name} with the message ${error.message} has occurred while executing the code`
@@ -143,9 +137,9 @@ module.exports.updateUserData = async (req, res) => {
 module.exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  if (email && password) {
-    return res.status(ERROR_CODES.OK).send({ message: "Login successful." });
-  }
+  // if (email && password) {
+  //   return res.status(ERROR_CODES.OK).send({ message: "Login successful." });
+  // }
 
   if (!email || !password) {
     return res
@@ -160,7 +154,7 @@ module.exports.login = async (req, res) => {
       expiresIn: "7d",
     });
 
-    return res.send({ token });
+    return res.status(ERROR_CODES.OK).send({ token });
   } catch (err) {
     return res
       .status(ERROR_CODES.AUTHENTICATION_ERROR)

@@ -7,6 +7,8 @@ const JWT_SECRET = require("../utils/config");
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
+  console.log("Authorization header:", authorization);
+
   if (!authorization || !authorization.startsWith("Bearer ")) {
     return res
       .status(AUTHENTICATION_ERROR)
@@ -14,12 +16,19 @@ module.exports = (req, res, next) => {
   }
 
   const token = authorization.replace("Bearer ", "");
+  console.log("Token extracted:", token);
 
   let payload;
 
   try {
-    payload = jwt.verify(token, JWT_SECRET);
+    /*const */ payload = jwt.verify(token, JWT_SECRET);
+    console.log("Token payload:", payload);
+
+    // req.user = payload;
+
+    // return next();
   } catch (err) {
+    console.error("Token verification failed:", err);
     return res
       .status(AUTHENTICATION_ERROR)
       .send({ message: "Authorization required" });
