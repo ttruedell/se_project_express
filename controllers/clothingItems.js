@@ -27,7 +27,7 @@ module.exports.getClothingItems = async (req, res, next) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    return next(error);
   }
 };
 
@@ -58,7 +58,7 @@ module.exports.createClothingItem = async (req, res, next) => {
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
 
-    next(error);
+    return next(error);
   }
 };
 
@@ -102,7 +102,7 @@ module.exports.deleteClothingItem = async (req, res, next) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    return next(error);
   }
 };
 
@@ -138,7 +138,7 @@ module.exports.likeItem = async (req, res, next) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    return next(error);
   }
 };
 
@@ -174,6 +174,6 @@ module.exports.dislikeItem = async (req, res, next) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    return next(error);
   }
 };

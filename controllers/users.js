@@ -55,7 +55,7 @@ module.exports.getCurrentUser = async (req, res, next) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    return next(error);
   }
 };
 
@@ -114,11 +114,7 @@ module.exports.createUser = async (req, res, next) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    if (error.name === "CastError") {
-      next(new BadRequestError("The id string is in an invalid format"));
-    } else {
-      next(error);
-    }
+    return next(error);
   }
 };
 
@@ -154,7 +150,7 @@ module.exports.updateUserData = async (req, res, next) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    return next(error);
   }
 };
 
@@ -177,7 +173,7 @@ module.exports.login = async (req, res, next) => {
 
     return res.status(RequestSuccess).send({ token });
   } catch (error) {
-    if (err.message === "Incorrect email or password.") {
+    if (error.message === "Incorrect email or password.") {
       // return res
       //   .status(ERROR_CODES.AUTHENTICATION_ERROR)
       //   .send({ message: "Incorrect email or password." });
@@ -187,6 +183,6 @@ module.exports.login = async (req, res, next) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    return next(error);
   }
 };
