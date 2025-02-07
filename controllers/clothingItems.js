@@ -2,21 +2,32 @@ const mongoose = require("mongoose");
 
 const ClothingItem = require("../models/clothingItem");
 
-const ERROR_CODES = require("../utils/errors");
+// const ERROR_CODES = require("../utils/errors");
+
+const {
+  RequestSuccess,
+  ResourceCreated,
+  BadRequestError,
+  UnauthorizedError,
+  ForbiddenError,
+  NotFoundError,
+  ConflictError,
+} = require("../utils/customErrors");
 
 module.exports.getClothingItems = async (req, res) => {
   try {
     const clothingItems = await ClothingItem.find();
 
-    return res.status(ERROR_CODES.OK).json(clothingItems);
+    return res.status(/*ERROR_CODES.OK*/ RequestSuccess).json(clothingItems);
   } catch (error) {
-    console.error(
-      `Error ${error.name} with the message ${error.message} has occurred while executing the code`
-    );
+    // console.error(
+    //   `Error ${error.name} with the message ${error.message} has occurred while executing the code`
+    // );
 
-    return res
-      .status(ERROR_CODES.SERVER_ERROR)
-      .send({ message: "An error has occurred on the server." });
+    // return res
+    //   .status(ERROR_CODES.SERVER_ERROR)
+    //   .send({ message: "An error has occurred on the server." });
+    next(error);
   }
 };
 
@@ -32,17 +43,21 @@ module.exports.createClothingItem = async (req, res) => {
       owner,
     });
     await newClothingItem.save();
-    return res.status(ERROR_CODES.CREATED).json(newClothingItem);
-  } catch (error) {
-    console.error(error);
-    if (error.name === "ValidationError") {
-      return res
-        .status(ERROR_CODES.BAD_REQUEST)
-        .send({ message: "Invalid data provided." });
-    }
     return res
-      .status(ERROR_CODES.SERVER_ERROR)
-      .send({ message: "An error has occurred on the server." });
+      .status(/*ERROR_CODES.CREATED*/ ResourceCreated)
+      .json(newClothingItem);
+  } catch (error) {
+    // console.error(error);
+    if (error.name === "ValidationError") {
+      // return res
+      //   .status(ERROR_CODES.BAD_REQUEST)
+      //   .send({ message: "Invalid data provided." });
+      return next(new BadRequestError("Invalid data provided."));
+    }
+    // return res
+    //   .status(ERROR_CODES.SERVER_ERROR)
+    //   .send({ message: "An error has occurred on the server." });
+    next(error);
   }
 };
 
@@ -51,36 +66,42 @@ module.exports.deleteClothingItem = async (req, res) => {
   const owner = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res
-      .status(ERROR_CODES.BAD_REQUEST)
-      .send({ message: "Invalid item ID format." });
+    // return res
+    //   .status(ERROR_CODES.BAD_REQUEST)
+    //   .send({ message: "Invalid item ID format." });
+    return next(new BadRequestError("Invalid item ID format."));
   }
 
   try {
     const clothingItem = await ClothingItem.findById(itemId);
 
     if (!clothingItem) {
-      return res
-        .status(ERROR_CODES.NOT_FOUND)
-        .send({ message: "Clothing item not found." });
+      // return res
+      //   .status(ERROR_CODES.NOT_FOUND)
+      //   .send({ message: "Clothing item not found." });
+      return next(new NotFoundError("Clothing item not found."));
     }
 
     if (!clothingItem.owner.equals(owner)) {
-      return res
-        .status(ERROR_CODES.FORBIDDEN)
-        .send({ message: "You do not have permission to delete this item." });
+      // return res
+      //   .status(ERROR_CODES.FORBIDDEN)
+      //   .send({ message: "You do not have permission to delete this item." });
+      return next(
+        new ForbiddenError("You do not have permission to delete this item.")
+      );
     }
 
     await ClothingItem.findByIdAndDelete(itemId);
 
     return res
-      .status(ERROR_CODES.OK)
+      .status(/*ERROR_CODES.OK*/ RequestSuccess)
       .json({ message: "Clothing item deleted successfully." });
   } catch (error) {
-    console.error(error);
-    return res
-      .status(ERROR_CODES.SERVER_ERROR)
-      .send({ message: "An error has occurred on the server." });
+    // console.error(error);
+    // return res
+    //   .status(ERROR_CODES.SERVER_ERROR)
+    //   .send({ message: "An error has occurred on the server." });
+    next(error);
   }
 };
 
@@ -89,9 +110,10 @@ module.exports.likeItem = async (req, res) => {
   const userId = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res
-      .status(ERROR_CODES.BAD_REQUEST)
-      .send({ message: "Invalid item ID format." });
+    // return res
+    //   .status(ERROR_CODES.BAD_REQUEST)
+    //   .send({ message: "Invalid item ID format." });
+    return next(new BadRequestError("Invalid item ID format."));
   }
 
   try {
@@ -102,18 +124,20 @@ module.exports.likeItem = async (req, res) => {
     );
 
     if (!updatedItem) {
-      return res
-        .status(ERROR_CODES.NOT_FOUND)
-        .send({ message: "Clothing item not found." });
+      // return res
+      //   .status(ERROR_CODES.NOT_FOUND)
+      //   .send({ message: "Clothing item not found." });
+      return next(new NotFoundError("Clothing item not found."));
     }
-    return res.status(ERROR_CODES.OK).json(updatedItem);
+    return res.status(/*ERROR_CODES.OK*/ RequestSuccess).json(updatedItem);
   } catch (error) {
-    console.error(
-      `Error ${error.name} with the message ${error.message} has occurred while executing the code`
-    );
-    return res
-      .status(ERROR_CODES.SERVER_ERROR)
-      .send({ message: "An error has occurred on the server." });
+    // console.error(
+    //   `Error ${error.name} with the message ${error.message} has occurred while executing the code`
+    // );
+    // return res
+    //   .status(ERROR_CODES.SERVER_ERROR)
+    //   .send({ message: "An error has occurred on the server." });
+    next(error);
   }
 };
 
@@ -122,9 +146,10 @@ module.exports.dislikeItem = async (req, res) => {
   const userId = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res
-      .status(ERROR_CODES.BAD_REQUEST)
-      .send({ message: "Invalid item ID format." });
+    // return res
+    //   .status(ERROR_CODES.BAD_REQUEST)
+    //   .send({ message: "Invalid item ID format." });
+    return next(new BadRequestError("Invalid item ID format."));
   }
 
   try {
@@ -135,17 +160,19 @@ module.exports.dislikeItem = async (req, res) => {
     );
 
     if (!updatedItem) {
-      return res
-        .status(ERROR_CODES.NOT_FOUND)
-        .send({ message: "Clothing item not found." });
+      // return res
+      //   .status(ERROR_CODES.NOT_FOUND)
+      //   .send({ message: "Clothing item not found." });
+      return next(new NotFoundError("Clothing item not found."));
     }
-    return res.status(ERROR_CODES.OK).json(updatedItem);
+    return res.status(/*ERROR_CODES.OK*/ RequestSuccess).json(updatedItem);
   } catch (error) {
-    console.error(
-      `Error ${error.name} with the message ${error.message} has occurred while executing the code`
-    );
-    return res
-      .status(ERROR_CODES.SERVER_ERROR)
-      .send({ message: "An error has occurred on the server." });
+    // console.error(
+    //   `Error ${error.name} with the message ${error.message} has occurred while executing the code`
+    // );
+    // return res
+    //   .status(ERROR_CODES.SERVER_ERROR)
+    //   .send({ message: "An error has occurred on the server." });
+    next(error);
   }
 };

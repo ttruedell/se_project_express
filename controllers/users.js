@@ -10,24 +10,35 @@ const JWT_SECRET = require("../utils/config");
 
 const User = require("../models/user");
 
-const ERROR_CODES = require("../utils/errors");
+// const ERROR_CODES = require("../utils/errors");
+
+const {
+  RequestSuccess,
+  ResourceCreated,
+  BadRequestError,
+  UnauthorizedError,
+  NotFoundError,
+  ConflictError,
+} = require("../utils/customErrors");
 
 module.exports.getCurrentUser = async (req, res) => {
   const userId = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
-    return res
-      .status(ERROR_CODES.BAD_REQUEST)
-      .send({ message: "Invalid user ID format." });
+    // return res
+    //   .status(/*ERROR_CODES.BAD_REQUEST*/ BadRequestError)
+    //   .send({ message: "Invalid user ID format." });
+    return next(new BadRequestError("Invalid user ID format."));
   }
 
   try {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res
-        .status(ERROR_CODES.NOT_FOUND)
-        .send({ message: "User not found." });
+      // return res
+      //   .status(ERROR_CODES.NOT_FOUND)
+      //   .send({ message: "User not found." });
+      return next(new NotFoundError("User not found."));
     }
 
     return res.status(ERROR_CODES.OK).json({
@@ -37,13 +48,14 @@ module.exports.getCurrentUser = async (req, res) => {
       email: user.email,
     });
   } catch (error) {
-    console.error(
-      `Error ${error.name} with the message ${error.message} has occurred while executing the code`
-    );
+    // console.error(
+    //   `Error ${error.name} with the message ${error.message} has occurred while executing the code`
+    // );
 
-    return res
-      .status(ERROR_CODES.SERVER_ERROR)
-      .send({ message: "An error has occurred on the server." });
+    // return res
+    //   .status(ERROR_CODES.SERVER_ERROR)
+    //   .send({ message: "An error has occurred on the server." });
+    next(error);
   }
 };
 
@@ -51,18 +63,20 @@ module.exports.createUser = async (req, res) => {
   const { name, avatar, email, password } = req.body;
 
   if (!email || !validator.isEmail(email)) {
-    return res
-      .status(ERROR_CODES.BAD_REQUEST)
-      .send({ message: "Invalid email provided." });
+    // return res
+    //   .status(ERROR_CODES.BAD_REQUEST)
+    //   .send({ message: "Invalid email provided." });
+    return next(new BadRequestError("Invalid email provided."));
   }
 
   try {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return res
-        .status(ERROR_CODES.CONFLICT)
-        .send({ message: "User already exists." });
+      // return res
+      //   .status(ERROR_CODES.CONFLICT)
+      //   .send({ message: "User already exists." });
+      return next(new ConflictError("User already exists."));
     }
 
     const hash = await bcrypt.hash(password, 10);
@@ -74,30 +88,33 @@ module.exports.createUser = async (req, res) => {
       password: hash,
     });
 
-    return res.status(ERROR_CODES.CREATED).json({
+    return res.status(/*ERROR_CODES.CREATED*/ ResourceCreated).json({
       name: newUser.name,
       avatar: newUser.avatar,
       email: newUser.email,
       _id: newUser._id,
     });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
     if (error.name === "ValidationError") {
-      return res
-        .status(ERROR_CODES.BAD_REQUEST)
-        .send({ message: "Invalid data provided." });
+      // return res
+      //   .status(ERROR_CODES.BAD_REQUEST)
+      //   .send({ message: "Invalid data provided." });
+      return next(new BadRequestError("Invalid data provided."));
     }
 
     if (error.name === "MongoError" && error.code === 11000) {
-      return res
-        .status(ERROR_CODES.CONFLICT)
-        .send({ message: "User already exists." });
+      // return res
+      //   .status(ERROR_CODES.CONFLICT)
+      //   .send({ message: "User already exists." });
+      return next(new ConflictError("User already exists."));
     }
 
-    return res
-      .status(ERROR_CODES.SERVER_ERROR)
-      .send({ message: "An error has occurred on the server." });
+    // return res
+    //   .status(ERROR_CODES.SERVER_ERROR)
+    //   .send({ message: "An error has occurred on the server." });
+    next(error);
   }
 };
 
@@ -113,24 +130,27 @@ module.exports.updateUserData = async (req, res) => {
     );
 
     if (!updatedUser) {
-      return res
-        .status(ERROR_CODES.NOT_FOUND)
-        .send({ message: "User not found." });
+      // return res
+      //   .status(ERROR_CODES.NOT_FOUND)
+      //   .send({ message: "User not found." });
+      return next(new NotFoundError("User not found."));
     }
 
-    return res.status(ERROR_CODES.OK).json(updatedUser);
+    return res.status(/*ERROR_CODES.OK*/ RequestSuccess).json(updatedUser);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
     if (error.name === "ValidationError") {
-      return res
-        .status(ERROR_CODES.BAD_REQUEST)
-        .send({ message: "Invalid data provided." });
+      // return res
+      //   .status(ERROR_CODES.BAD_REQUEST)
+      //   .send({ message: "Invalid data provided." });
+      return next(new BadRequestError("Invalid data provided."));
     }
 
-    return res
-      .status(ERROR_CODES.SERVER_ERROR)
-      .send({ message: "An error has occurred on the server." });
+    // return res
+    //   .status(ERROR_CODES.SERVER_ERROR)
+    //   .send({ message: "An error has occurred on the server." });
+    next(error);
   }
 };
 
@@ -138,9 +158,10 @@ module.exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res
-      .status(ERROR_CODES.BAD_REQUEST)
-      .send({ message: "Email and password are required." });
+    // return res
+    //   .status(ERROR_CODES.BAD_REQUEST)
+    //   .send({ message: "Email and password are required." });
+    return next(new BadRequestError("Email and password are required."));
   }
 
   try {
@@ -153,13 +174,15 @@ module.exports.login = async (req, res) => {
     return res.status(ERROR_CODES.OK).send({ token });
   } catch (err) {
     if (err.message === "Incorrect email or password.") {
-      return res
-        .status(ERROR_CODES.AUTHENTICATION_ERROR)
-        .send({ message: "Incorrect email or password." });
+      // return res
+      //   .status(ERROR_CODES.AUTHENTICATION_ERROR)
+      //   .send({ message: "Incorrect email or password." });
+      return next(new UnauthorizedError("Incorrect email or password."));
     }
 
-    return res
-      .status(ERROR_CODES.SERVER_ERROR)
-      .send({ message: "An error has occurred on the server." });
+    // return res
+    //   .status(ERROR_CODES.SERVER_ERROR)
+    //   .send({ message: "An error has occurred on the server." });
+    next(error);
   }
 };
