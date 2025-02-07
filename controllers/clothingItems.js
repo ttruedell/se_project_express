@@ -14,8 +14,6 @@ const ClothingItem = require("../models/clothingItem");
 //   // ConflictError,
 // } = require("../utils/customErrors");
 
-const RequestSuccess = require("../utils/errors/RequestSuccess");
-const ResourceCreated = require("../utils/errors/ResourceCreated");
 const BadRequestError = require("../utils/errors/BadRequestError");
 const ForbiddenError = require("../utils/errors/ForbiddenError");
 const NotFoundError = require("../utils/errors/NotFoundError");
@@ -24,7 +22,7 @@ module.exports.getClothingItems = async (req, res, next) => {
   try {
     const clothingItems = await ClothingItem.find();
 
-    return res.status(RequestSuccess).json(clothingItems);
+    return res.status(200).json(clothingItems);
   } catch (error) {
     // console.error(
     //   `Error ${error.name} with the message ${error.message} has occurred while executing the code`
@@ -49,9 +47,7 @@ module.exports.createClothingItem = async (req, res, next) => {
       owner,
     });
     await newClothingItem.save();
-    return res
-      .status(/* ERROR_CODES.CREATED */ ResourceCreated)
-      .json(newClothingItem);
+    return res.status(201).json(newClothingItem);
   } catch (error) {
     // console.error(error);
     if (error.name === "ValidationError") {
@@ -101,7 +97,7 @@ module.exports.deleteClothingItem = async (req, res, next) => {
     await ClothingItem.findByIdAndDelete(itemId);
 
     return res
-      .status(RequestSuccess)
+      .status(200)
       .json({ message: "Clothing item deleted successfully." });
   } catch (error) {
     // console.error(error);
@@ -136,7 +132,7 @@ module.exports.likeItem = async (req, res, next) => {
       //   .send({ message: "Clothing item not found." });
       return next(new NotFoundError("Clothing item not found."));
     }
-    return res.status(RequestSuccess).json(updatedItem);
+    return res.status(200).json(updatedItem);
   } catch (error) {
     // console.error(
     //   `Error ${error.name} with the message ${error.message} has occurred while executing the code`
@@ -172,7 +168,7 @@ module.exports.dislikeItem = async (req, res, next) => {
       //   .send({ message: "Clothing item not found." });
       return next(new NotFoundError("Clothing item not found."));
     }
-    return res.status(RequestSuccess).json(updatedItem);
+    return res.status(200).json(updatedItem);
   } catch (error) {
     // console.error(
     //   `Error ${error.name} with the message ${error.message} has occurred while executing the code`

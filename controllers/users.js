@@ -21,8 +21,6 @@ const User = require("../models/user");
 //   ConflictError,
 // } = require("../utils/customErrors");
 
-const RequestSuccess = require("../utils/errors/RequestSuccess");
-const ResourceCreated = require("../utils/errors/ResourceCreated");
 const BadRequestError = require("../utils/errors/BadRequestError");
 const UnauthorizedError = require("../utils/errors/UnauthorizedError");
 const NotFoundError = require("../utils/errors/NotFoundError");
@@ -48,7 +46,7 @@ module.exports.getCurrentUser = async (req, res, next) => {
       return next(new NotFoundError("User not found."));
     }
 
-    return res.status(RequestSuccess).json({
+    return res.status(200).json({
       _id: user._id,
       name: user.name,
       avatar: user.avatar,
@@ -95,7 +93,7 @@ module.exports.createUser = async (req, res, next) => {
       password: hash,
     });
 
-    return res.status(/* ERROR_CODES.CREATED */ ResourceCreated).json({
+    return res.status(201).json({
       name: newUser.name,
       avatar: newUser.avatar,
       email: newUser.email,
@@ -143,7 +141,7 @@ module.exports.updateUserData = async (req, res, next) => {
       return next(new NotFoundError("User not found."));
     }
 
-    return res.status(RequestSuccess).json(updatedUser);
+    return res.status(200).json(updatedUser);
   } catch (error) {
     // console.error(error);
 
@@ -178,7 +176,7 @@ module.exports.login = async (req, res, next) => {
       expiresIn: "7d",
     });
 
-    return res.status(RequestSuccess).send({ token });
+    return res.status(200).send({ token });
   } catch (error) {
     if (error.message === "Incorrect email or password.") {
       // return res
