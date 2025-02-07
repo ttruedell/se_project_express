@@ -4,15 +4,21 @@ const ClothingItem = require("../models/clothingItem");
 
 // const ERROR_CODES = require("../utils/errors");
 
-const {
-  RequestSuccess,
-  ResourceCreated,
-  BadRequestError,
-  // UnauthorizedError,
-  ForbiddenError,
-  NotFoundError,
-  // ConflictError,
-} = require("../utils/customErrors");
+// const {
+//   RequestSuccess,
+//   ResourceCreated,
+//   BadRequestError,
+//   // UnauthorizedError,
+//   ForbiddenError,
+//   NotFoundError,
+//   // ConflictError,
+// } = require("../utils/customErrors");
+
+const RequestSuccess = require("../utils/errors/RequestSuccess");
+const ResourceCreated = require("../utils/errors/ResourceCreated");
+const BadRequestError = require("../utils/errors/BadRequestError");
+const ForbiddenError = require("../utils/errors/ForbiddenError");
+const NotFoundError = require("../utils/errors/NotFoundError");
 
 module.exports.getClothingItems = async (req, res, next) => {
   try {

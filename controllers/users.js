@@ -12,14 +12,21 @@ const User = require("../models/user");
 
 // const ERROR_CODES = require("../utils/errors");
 
-const {
-  RequestSuccess,
-  ResourceCreated,
-  BadRequestError,
-  UnauthorizedError,
-  NotFoundError,
-  ConflictError,
-} = require("../utils/customErrors");
+// const {
+//   RequestSuccess,
+//   ResourceCreated,
+//   BadRequestError,
+//   UnauthorizedError,
+//   NotFoundError,
+//   ConflictError,
+// } = require("../utils/customErrors");
+
+const RequestSuccess = require("../utils/errors/RequestSuccess");
+const ResourceCreated = require("../utils/errors/ResourceCreated");
+const BadRequestError = require("../utils/errors/BadRequestError");
+const UnauthorizedError = require("../utils/errors/UnauthorizedError");
+const NotFoundError = require("../utils/errors/NotFoundError");
+const ConflictError = require("../utils/errors/ConflictError");
 
 module.exports.getCurrentUser = async (req, res, next) => {
   const userId = req.user._id;
