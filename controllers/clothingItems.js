@@ -8,17 +8,17 @@ const {
   RequestSuccess,
   ResourceCreated,
   BadRequestError,
-  UnauthorizedError,
+  // UnauthorizedError,
   ForbiddenError,
   NotFoundError,
-  ConflictError,
+  // ConflictError,
 } = require("../utils/customErrors");
 
 module.exports.getClothingItems = async (req, res) => {
   try {
     const clothingItems = await ClothingItem.find();
 
-    return res.status(/*ERROR_CODES.OK*/ RequestSuccess).json(clothingItems);
+    return res.status(RequestSuccess).json(clothingItems);
   } catch (error) {
     // console.error(
     //   `Error ${error.name} with the message ${error.message} has occurred while executing the code`
@@ -27,6 +27,10 @@ module.exports.getClothingItems = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
+    if (error.name === "CastError") {
+      next(new BadRequestError("The id string is in an invalid format"));
+    }
+
     next(error);
   }
 };
@@ -57,7 +61,11 @@ module.exports.createClothingItem = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    if (error.name === "CastError") {
+      next(new BadRequestError("The id string is in an invalid format"));
+    } else {
+      next(error);
+    }
   }
 };
 
@@ -94,14 +102,18 @@ module.exports.deleteClothingItem = async (req, res) => {
     await ClothingItem.findByIdAndDelete(itemId);
 
     return res
-      .status(/*ERROR_CODES.OK*/ RequestSuccess)
+      .status(RequestSuccess)
       .json({ message: "Clothing item deleted successfully." });
   } catch (error) {
     // console.error(error);
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    if (error.name === "CastError") {
+      next(new BadRequestError("The id string is in an invalid format"));
+    } else {
+      next(error);
+    }
   }
 };
 
@@ -129,7 +141,7 @@ module.exports.likeItem = async (req, res) => {
       //   .send({ message: "Clothing item not found." });
       return next(new NotFoundError("Clothing item not found."));
     }
-    return res.status(/*ERROR_CODES.OK*/ RequestSuccess).json(updatedItem);
+    return res.status(RequestSuccess).json(updatedItem);
   } catch (error) {
     // console.error(
     //   `Error ${error.name} with the message ${error.message} has occurred while executing the code`
@@ -137,7 +149,11 @@ module.exports.likeItem = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    if (error.name === "CastError") {
+      next(new BadRequestError("The id string is in an invalid format"));
+    } else {
+      next(error);
+    }
   }
 };
 
@@ -165,7 +181,7 @@ module.exports.dislikeItem = async (req, res) => {
       //   .send({ message: "Clothing item not found." });
       return next(new NotFoundError("Clothing item not found."));
     }
-    return res.status(/*ERROR_CODES.OK*/ RequestSuccess).json(updatedItem);
+    return res.status(RequestSuccess).json(updatedItem);
   } catch (error) {
     // console.error(
     //   `Error ${error.name} with the message ${error.message} has occurred while executing the code`
@@ -173,6 +189,10 @@ module.exports.dislikeItem = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    if (error.name === "CastError") {
+      next(new BadRequestError("The id string is in an invalid format"));
+    } else {
+      next(error);
+    }
   }
 };

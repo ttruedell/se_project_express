@@ -114,7 +114,11 @@ module.exports.createUser = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    if (error.name === "CastError") {
+      next(new BadRequestError("The id string is in an invalid format"));
+    } else {
+      next(error);
+    }
   }
 };
 
@@ -136,7 +140,7 @@ module.exports.updateUserData = async (req, res) => {
       return next(new NotFoundError("User not found."));
     }
 
-    return res.status(/*ERROR_CODES.OK*/ RequestSuccess).json(updatedUser);
+    return res.status(RequestSuccess).json(updatedUser);
   } catch (error) {
     // console.error(error);
 
@@ -150,7 +154,11 @@ module.exports.updateUserData = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    if (error.name === "CastError") {
+      next(new BadRequestError("The id string is in an invalid format"));
+    } else {
+      next(error);
+    }
   }
 };
 
@@ -171,8 +179,8 @@ module.exports.login = async (req, res) => {
       expiresIn: "7d",
     });
 
-    return res.status(ERROR_CODES.OK).send({ token });
-  } catch (err) {
+    return res.status(RequestSuccess).send({ token });
+  } catch (error) {
     if (err.message === "Incorrect email or password.") {
       // return res
       //   .status(ERROR_CODES.AUTHENTICATION_ERROR)
@@ -183,6 +191,10 @@ module.exports.login = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    next(error);
+    if (error.name === "CastError") {
+      next(new BadRequestError("The id string is in an invalid format"));
+    } else {
+      next(error);
+    }
   }
 };
