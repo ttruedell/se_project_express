@@ -14,7 +14,7 @@ const {
   // ConflictError,
 } = require("../utils/customErrors");
 
-module.exports.getClothingItems = async (req, res) => {
+module.exports.getClothingItems = async (req, res, next) => {
   try {
     const clothingItems = await ClothingItem.find();
 
@@ -27,15 +27,11 @@ module.exports.getClothingItems = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    if (error.name === "CastError") {
-      next(new BadRequestError("The id string is in an invalid format"));
-    }
-
     next(error);
   }
 };
 
-module.exports.createClothingItem = async (req, res) => {
+module.exports.createClothingItem = async (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
   const owner = req.user._id;
 
@@ -48,7 +44,7 @@ module.exports.createClothingItem = async (req, res) => {
     });
     await newClothingItem.save();
     return res
-      .status(/*ERROR_CODES.CREATED*/ ResourceCreated)
+      .status(/* ERROR_CODES.CREATED */ ResourceCreated)
       .json(newClothingItem);
   } catch (error) {
     // console.error(error);
@@ -61,15 +57,12 @@ module.exports.createClothingItem = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    if (error.name === "CastError") {
-      next(new BadRequestError("The id string is in an invalid format"));
-    } else {
-      next(error);
-    }
+
+    next(error);
   }
 };
 
-module.exports.deleteClothingItem = async (req, res) => {
+module.exports.deleteClothingItem = async (req, res, next) => {
   const { itemId } = req.params;
   const owner = req.user._id;
 
@@ -109,15 +102,11 @@ module.exports.deleteClothingItem = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    if (error.name === "CastError") {
-      next(new BadRequestError("The id string is in an invalid format"));
-    } else {
-      next(error);
-    }
+    next(error);
   }
 };
 
-module.exports.likeItem = async (req, res) => {
+module.exports.likeItem = async (req, res, next) => {
   const { itemId } = req.params;
   const userId = req.user._id;
 
@@ -149,15 +138,11 @@ module.exports.likeItem = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    if (error.name === "CastError") {
-      next(new BadRequestError("The id string is in an invalid format"));
-    } else {
-      next(error);
-    }
+    next(error);
   }
 };
 
-module.exports.dislikeItem = async (req, res) => {
+module.exports.dislikeItem = async (req, res, next) => {
   const { itemId } = req.params;
   const userId = req.user._id;
 
@@ -189,10 +174,6 @@ module.exports.dislikeItem = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    if (error.name === "CastError") {
-      next(new BadRequestError("The id string is in an invalid format"));
-    } else {
-      next(error);
-    }
+    next(error);
   }
 };

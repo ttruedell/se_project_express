@@ -21,7 +21,7 @@ const {
   ConflictError,
 } = require("../utils/customErrors");
 
-module.exports.getCurrentUser = async (req, res) => {
+module.exports.getCurrentUser = async (req, res, next) => {
   const userId = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -41,7 +41,7 @@ module.exports.getCurrentUser = async (req, res) => {
       return next(new NotFoundError("User not found."));
     }
 
-    return res.status(ERROR_CODES.OK).json({
+    return res.status(RequestSuccess).json({
       _id: user._id,
       name: user.name,
       avatar: user.avatar,
@@ -59,7 +59,7 @@ module.exports.getCurrentUser = async (req, res) => {
   }
 };
 
-module.exports.createUser = async (req, res) => {
+module.exports.createUser = async (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
   if (!email || !validator.isEmail(email)) {
@@ -88,7 +88,7 @@ module.exports.createUser = async (req, res) => {
       password: hash,
     });
 
-    return res.status(/*ERROR_CODES.CREATED*/ ResourceCreated).json({
+    return res.status(/* ERROR_CODES.CREATED */ ResourceCreated).json({
       name: newUser.name,
       avatar: newUser.avatar,
       email: newUser.email,
@@ -122,7 +122,7 @@ module.exports.createUser = async (req, res) => {
   }
 };
 
-module.exports.updateUserData = async (req, res) => {
+module.exports.updateUserData = async (req, res, next) => {
   const userId = req.user._id;
   const { name, avatar } = req.body;
 
@@ -154,15 +154,11 @@ module.exports.updateUserData = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    if (error.name === "CastError") {
-      next(new BadRequestError("The id string is in an invalid format"));
-    } else {
-      next(error);
-    }
+    next(error);
   }
 };
 
-module.exports.login = async (req, res) => {
+module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -191,10 +187,6 @@ module.exports.login = async (req, res) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
-    if (error.name === "CastError") {
-      next(new BadRequestError("The id string is in an invalid format"));
-    } else {
-      next(error);
-    }
+    next(error);
   }
 };
