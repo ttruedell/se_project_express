@@ -6,6 +6,11 @@ const userRoutes = require("./users");
 
 const clothingItemRoutes = require("./clothingItems");
 
+const {
+  validateUserSignup,
+  validateUserLogin,
+} = require("../middlewares/validation");
+
 const { login, createUser } = require("../controllers/users");
 
 const ERROR_CODES = require("../utils/errors");
@@ -13,8 +18,8 @@ const ERROR_CODES = require("../utils/errors");
 router.use("/", userRoutes);
 router.use("/items", clothingItemRoutes);
 
-router.post("/signin", login);
-router.post("/signup", createUser);
+router.post("/signin", validateUserLogin, login);
+router.post("/signup", validateUserSignup, createUser);
 
 router.use((req, res) => {
   console.error();

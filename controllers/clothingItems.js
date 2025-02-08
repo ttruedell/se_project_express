@@ -17,6 +17,7 @@ const ClothingItem = require("../models/clothingItem");
 const BadRequestError = require("../utils/errors/BadRequestError");
 const ForbiddenError = require("../utils/errors/ForbiddenError");
 const NotFoundError = require("../utils/errors/NotFoundError");
+const UnauthorizedError = require("../utils/errors/UnauthorizedError");
 
 module.exports.getClothingItems = async (req, res, next) => {
   try {
@@ -38,6 +39,11 @@ module.exports.getClothingItems = async (req, res, next) => {
 module.exports.createClothingItem = async (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
   const owner = req.user._id;
+
+  if (!owner) {
+    console.log("No owner found in request. Authorization might have failed.");
+    return next(new UnauthorizedError("Authorization required"));
+  }
 
   try {
     const newClothingItem = new ClothingItem({

@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 
 const cors = require("cors");
 
+const { errors } = require("celebrate");
+
 const routes = require("./routes/index");
 
 const app = express();
@@ -27,12 +29,9 @@ app.use(express.json());
 
 app.use("/", routes);
 
-app.use(errorHandler);
+app.use(errors());
 
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(err.statusCode).send({ message: err.message });
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
