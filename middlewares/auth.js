@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 // const { AUTHENTICATION_ERROR } = require("../utils/errors");
 const UnauthorizedError = require("../utils/errors/UnauthorizedError");
 
-const JWT_SECRET = require("../utils/config");
+const { JWT_SECRET } = require("../utils/config");
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
@@ -23,7 +23,7 @@ module.exports = (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, JWT_SECRET);
+    payload = jwt.verify(token, { JWT_SECRET });
     console.log("Token payload:", payload);
   } catch (err) {
     console.error("Token verification failed:", err);
