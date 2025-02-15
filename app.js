@@ -17,6 +17,8 @@ const errorHandler = require("./middlewares/error-handler");
 
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
+mongoose.set("strictQuery", true);
+
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db", {
     useNewUrlParser: true,
@@ -49,4 +51,4 @@ app
     console.error("Server failed to start:", error.message);
   });
 
-mongoose.set("strictQuery", true);
+// mongoose.set("strictQuery", true);
