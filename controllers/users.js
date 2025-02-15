@@ -60,6 +60,9 @@ module.exports.getCurrentUser = async (req, res, next) => {
     // return res
     //   .status(ERROR_CODES.SERVER_ERROR)
     //   .send({ message: "An error has occurred on the server." });
+    if (error.name === "CastError") {
+      return next(new BadRequestError("The ID format is invalid."));
+    }
     return next(error);
   }
 };
