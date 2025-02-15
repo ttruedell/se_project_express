@@ -9,7 +9,7 @@ const errorHandler = (err, req, res, next) => {
     message: statusCode === 500 ? "An error occurred on the server" : message,
   });
 
-  next();
+  // next();
 };
 
 module.exports = errorHandler;
