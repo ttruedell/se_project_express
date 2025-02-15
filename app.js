@@ -41,8 +41,12 @@ app.use(errors());
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+app
+  .listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  })
+  .on("error", (error) => {
+    console.error("Server failed to start:", error.message);
+  });
 
 mongoose.set("strictQuery", true);
