@@ -1,5 +1,3 @@
-import { rateLimit } from "express-rate-limit";
-
 require("dotenv").config();
 
 const express = require("express");
@@ -48,7 +46,7 @@ app.get("/crash-test", () => {
   }, 0);
 });
 
-app.use(rateLimit(limiter));
+app.use(limiter);
 
 app.use("/", routes);
 
