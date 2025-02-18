@@ -1,3 +1,5 @@
+import { rateLimit } from "express-rate-limit";
+
 require("dotenv").config();
 
 const express = require("express");
@@ -16,6 +18,8 @@ const { PORT = 3001 } = process.env;
 const errorHandler = require("./middlewares/error-handler");
 
 const { requestLogger, errorLogger } = require("./middlewares/logger");
+
+const limiter = require("./utils/rateLimiter");
 
 mongoose.set("strictQuery", true);
 
@@ -39,6 +43,8 @@ app.get("/crash-test", () => {
     throw new Error("Server will crash now");
   }, 0);
 });
+
+app.use(rateLimit(limiter));
 
 app.use("/", routes);
 

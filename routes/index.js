@@ -22,7 +22,7 @@ router.use("/items", clothingItemRoutes);
 router.post("/signin", validateUserLogin, login);
 router.post("/signup", validateUserSignup, createUser);
 
-router.use((req, res) => {
+router.use((req, res, next) => {
   console.error();
   // res
   //   .status(ERROR_CODES.NOT_FOUND)
