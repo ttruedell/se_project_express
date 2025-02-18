@@ -10,6 +10,8 @@ const cors = require("cors");
 
 const { errors } = require("celebrate");
 
+const helmet = require("helmet");
+
 const routes = require("./routes/index");
 
 const app = express();
@@ -32,6 +34,8 @@ mongoose
     console.log("Connected to DB");
   })
   .catch(console.error);
+
+app.use(helmet());
 
 app.use(cors());
 
